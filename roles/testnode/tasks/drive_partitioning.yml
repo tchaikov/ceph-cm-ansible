@@ -15,54 +15,25 @@
   command: "parted -s {{ drive_to_partition }} mktable msdos"
   when: partition_count.stdout != '4'
 
-- name: "Write partition 1 to {{ drive_to_partition }}"
-  command: "parted {{ drive_to_partition }} unit '%' mkpart primary 0 25"
+- name: "Write partition entries to {{ drive_to_partition }}"
+  command: "parted {{ drive_to_partition }} unit '%' mkpart primary {{ item }}"
+  with_items:
+    - "0 25"
+    - "25 50"
+    - "50 75"
+    - "75 100"
   when: partition_count.stdout != '4'
 
-- name: "Write partition 2 to {{ drive_to_partition }}"
-  command: "parted {{ drive_to_partition }} unit '%' mkpart primary 25 50"
-  when: partition_count.stdout != '4'
-
-- name: "Write partition 3 to {{ drive_to_partition }}"
-  command: "parted {{ drive_to_partition }} unit '%' mkpart primary 50 75"
-  when: partition_count.stdout != '4'
-
-- name: "Write partition 4 to {{ drive_to_partition }}"
-  command: "parted {{ drive_to_partition }} unit '%' mkpart primary 75 100"
-  when: partition_count.stdout != '4'
-
-- name: "Add line to /scratch_devs for {{ drive_to_partition }} p1"
+- name: "Add /scratch_devs for {{ drive_to_partition }} p1"
   lineinfile:
     dest: /scratch_devs
     create: yes
     owner: root
     group: root
     mode: 0644
-    line: "{{drive_to_partition}}p1"
-
-- name: "Add line to /scratch_devs for {{ drive_to_partition }} p2"
-  lineinfile:
-    dest: /scratch_devs
-    create: yes
-    owner: root
-    group: root
-    mode: 0644
-    line: "{{drive_to_partition}}p2"
-
-- name: "Add line to /scratch_devs for {{ drive_to_partition }} p3"
-  lineinfile:
-    dest: /scratch_devs
-    create: yes
-    owner: root
-    group: root
-    mode: 0644
-    line: "{{drive_to_partition}}p3"
-
-- name: "Add line to /scratch_devs for {{ drive_to_partition }} p4"
-  lineinfile:
-    dest: /scratch_devs
-    create: yes
-    owner: root
-    group: root
-    mode: 0644
-    line: "{{drive_to_partition}}p4"
+    line: "{{ drive_to_partition }}{{ item }}"
+  with_items:
+    - p1
+    - p2
+    - p3
+    - p4
