@@ -1,0 +1,16 @@
+---
+packages:
+  ## misc tools
+  - vim
+  - wget
+  - mlocate
+  - git
+  ## bind-specific packages
+  - bind
+  - bind-utils
+  - bind-chroot
+  ## other networking
+  - iptables-services
+  ## monitoring
+  - nrpe
+  - nagios-plugins-all
