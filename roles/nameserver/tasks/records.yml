@@ -14,6 +14,7 @@
     dest: "{{ named_conf_zones_path }}/{{ item }}"
     validate: named-checkzone {{ item }} %s
   with_items: forward_zones
+  notify: reload named
 
 - name: Write reverse zone files
   template:
@@ -21,3 +22,4 @@
     dest: "{{ named_conf_zones_path }}/{{ item }}"
     validate: named-checkzone {{ item }} %s
   with_items: reverse_zones
+  notify: reload named
