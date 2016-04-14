@@ -1,0 +1,24 @@
+{% set domain = item %}
+;
+; {{ ansible_managed }}
+;
+$TTL {{ named_conf_ttl }}
+@		IN	SOA	{{ named_conf_soa }} (
+				{{ named_serial }}	; Serial (YYYYMMDDSS)
+				{{ named_conf_refresh }}		; Refresh
+				{{ named_conf_retry }}		; Retry
+				{{ named_conf_expire }}		; Expire
+				{{ named_conf_ttl }}		; TTL
+				)
+
+{% for nameserver in groups['nameserver'] %}
+		IN	NS	{{ nameserver }}.
+{% endfor %}
+
+$ORIGIN {{ domain }}.
+
+{% for host in groups['all'] %}
+{% if hostvars[host].ip is defined %}
+{{ hostvars[host]['inventory_hostname_short'] }}			IN	A	{{ hostvars[host].ip }}
+{% endif %}
+{% endfor %}

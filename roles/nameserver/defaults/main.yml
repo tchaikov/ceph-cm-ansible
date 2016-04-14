@@ -1,7 +1,12 @@
 ---
 # These defaults are present to allow certain tasks to no-op if a secrets repo
 # hasn't been defined. If you want to override these, do so in the secrets repo
-# itself. We override these in  $repo/ansible/inventory/group_vars/gateway.yml
+# itself. We override these in  $repo/ansible/inventory/group_vars/nameserver.yml
 secrets_repo:
   name: UNDEFINED
   url: null
+
+named_conf_ttl: 3600
+named_conf_refresh: 3600
+named_conf_retry: 3600
+named_conf_expire: 604800

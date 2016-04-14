@@ -1,0 +1,26 @@
+{% set zone = item %}
+;
+; {{ ansible_managed }}
+;
+$TTL {{ named_conf_ttl }}
+@		IN	SOA	{{ named_conf_soa }} (
+				{{ named_serial }}	; Serial (YYYYMMDDSS)
+				{{ named_conf_refresh }}		; Refresh
+				{{ named_conf_retry }}		; Retry
+				{{ named_conf_expire }}		; Expire
+				{{ named_conf_ttl }}		; TTL
+				)
+
+{% for nameserver in groups['nameserver'] %}
+		IN	NS	{{ nameserver }}.
+{% endfor %}
+
+{% for host in groups['all'] %}
+{% if hostvars[host].ip is defined %}
+{% set octet1,octet2,octet3,octet4 = hostvars[host].ip.split('.') %}
+{% set cutip = octet1 + '.' + octet2 + '.' + octet3 %}
+{% if cutip == zone %}
+{{ octet4 }}			IN	PTR	{{ hostvars[host]['inventory_hostname'] }}.
+{% endif %}
+{% endif %}
+{% endfor %}

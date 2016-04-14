@@ -1,0 +1,23 @@
+---
+- name: Make sure zonefile path exists
+  file:
+    path: /var/named/chroot/var/named
+    state: directory
+
+- name: Set named_serial variable
+  set_fact:
+    named_serial: "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.second }}"
+
+- name: Write forward zone files
+  template:
+    src: forward.j2
+    dest: "{{ named_conf_zones_path }}/{{ item }}"
+    validate: named-checkzone {{ item }} %s
+  with_items: forward_zones
+
+- name: Write reverse zone files
+  template:
+    src: reverse.j2
+    dest: "{{ named_conf_zones_path }}/{{ item }}"
+    validate: named-checkzone {{ item }} %s
+  with_items: reverse_zones
